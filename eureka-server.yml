@@ -6,52 +6,48 @@ spring:
       context-path: /admin
 server:
   port: 8070
+eureka:
+  instance:
+    hostname: eurekaserver
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://peer1:8071/eureka/, http://peer2:8072/eureka
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: peer1
+  profile: peer1
+  application:
+    name: eureka-server
+server:
+  port: 8071
 eureka:
   instance:
     hostname: peer1
   client:
-    registerWithEureka: false
-    fetchRegistry: false
+    registerWithEureka: true
+    fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      defaultZone: http://eurekaserver:8070/eureka/, http://peer2:8072/eureka
   server:
     waitTimeInMsWhenSyncEmpty: 5
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: peer2
+  profile: peer2
+  application:
+    name: eureka-server
+server:
+  port: 8072
 eureka:
   instance:
     hostname: peer2
   client:
-    registerWithEureka: false
-    fetchRegistry: false
+    registerWithEureka: true
+    fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
-  server:
-    waitTimeInMsWhenSyncEmpty: 5
-
----
-spring:
-  config:
-    activate:
-      on-profile: peer3
-eureka:
-  instance:
-    hostname: peer3
-  client:
-    registerWithEureka: false
-    fetchRegistry: false
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      defaultZone: http://eurekaserver:8070/eureka/, http://peer1:8071/eureka
   server:
     waitTimeInMsWhenSyncEmpty: 5
 
