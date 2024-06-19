@@ -1,4 +1,12 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+---
 spring:
+  profile: peer1
   application:
     name: eureka-server
   boot:
@@ -8,30 +16,12 @@ server:
   port: 8070
 eureka:
   instance:
-    hostname: eurekaserver
-  client:
-    registerWithEureka: false
-    fetchRegistry: false
-    serviceUrl:
-      defaultZone: http://peer1:8071/eureka/, http://peer2:8072/eureka
-
----
-spring:
-  profile: peer1
-  application:
-    name: eureka-server
-server:
-  port: 8071
-eureka:
-  instance:
-    hostname: peer1
+    hostname: eureka-peer1
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://eurekaserver:8070/eureka/, http://peer2:8072/eureka
-  server:
-    waitTimeInMsWhenSyncEmpty: 5
+      defaultZone: http://eureka-peer2:$8071/eureka/, http://eureka-peer3:$8072/eureka/
 
 ---
 spring:
@@ -39,24 +29,35 @@ spring:
   application:
     name: eureka-server
 server:
-  port: 8072
+  port: 8071
 eureka:
   instance:
-    hostname: peer2
+    hostname: eureka-peer2
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://eurekaserver:8070/eureka/, http://peer1:8071/eureka
+      defaultZone: http://eureka-peer1:8070/eureka/, http://eureka-peer3:8072/eureka
   server:
     waitTimeInMsWhenSyncEmpty: 5
 
 ---
+spring:
+  profile: peer3
+  application:
+    name: eureka-server
+server:
+  port: 8072
+eureka:
+  instance:
+    hostname: eureka-peer3
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eureka-peer1:8070/eureka/, http://eureka-peer2:8071/eureka
+  server:
+    waitTimeInMsWhenSyncEmpty: 5
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
 
 
