@@ -1,0 +1,16 @@
+spring:
+  profile: peer3
+  application:
+    name: eureka-server
+server:
+  port: 8073
+eureka:
+  instance:
+    hostname: eureka-peer3
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eureka-peer1:8070/eureka, http://eureka-peer2:8072/eureka
+  server:
+    waitTimeInMsWhenSyncEmpty: 5
